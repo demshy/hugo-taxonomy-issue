@@ -1,0 +1,9 @@
+{{- $env := getenv "CONTEXT" -}}
+[
+  {{- range $index, $value := .Pages }}
+    {{- if $index -}}, {{ end }}
+    {
+      "title": "{{ .Title }}"
+    }
+  {{- end }}
+]

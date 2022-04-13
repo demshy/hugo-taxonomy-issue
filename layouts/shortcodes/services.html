@@ -1,0 +1,30 @@
+{{ $services := split (.Get "items") "|" }}
+{{ $title := .Get "title" }}
+{{ $extraClass := .Get "extraClass" }}
+{{ $extraText := .Get "extraText" }}
+
+<div class="container">
+  <div class="services {{ with $extraClass }} services--{{ . }} {{ end }}">
+    <div class="services__wrapper">
+      <h2>{{ with $title }}{{ . }}{{ else }}{{ T "services-amenities" }}{{ end }}</h2>
+
+      <ul class="no-bullets">
+        {{ range $services }}
+          {{ $text := index (split . "|") 0 }}
+          <li>
+            <i class="icon-check"></i>
+            <span>{{ $text }}</span>
+          </li>
+        {{ end }}
+      </ul>
+
+      <div class="services__show-more">
+        <span class="show-more">{{ T "show-more" }}<i class="icon-caret-down"></i></span>
+      </div>
+    </div>
+
+    {{ with $extraText }}
+      <p class="note">{{ . }}</p>
+    {{ end }}
+  </div>
+</div>

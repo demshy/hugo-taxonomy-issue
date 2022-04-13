@@ -1,0 +1,45 @@
+{{ $context := .context }}
+{{ $newsPage := $context.Site.GetPage "/brands/news/" }}
+{{ $brand := .brand }}
+{{ $propertyLink := .propertyLink }}
+
+{{ $pages := slice }}
+{{ range $newsPage.Pages }}
+  {{ $propertyPage := $context.Site.GetPage (print "/properties/" (replace .Params.property "/_index" "")) }}
+  {{ $propertyBrand := $propertyPage.Params.brand }}
+  {{ if and $brand (eq $brand $propertyBrand) }}
+    {{ $pages = $pages | append . }}
+  {{ end }}
+  {{ if and $propertyLink (eq $propertyLink $propertyPage.RelPermalink) }}
+    {{ $pages = $pages | append . }}
+  {{ end }}
+{{ end }}
+
+{{ if gt (len $pages) 0 }}
+  <div class="news {{ .class }}">
+    {{ with .heading }}
+      <div class="container">
+        {{ partial "components/section-heading" . }}
+      </div>
+    {{ end }}
+
+    <div class="news__slider">
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          {{ range $pages }}
+            <div class="swiper-slide">
+              {{ partial "components/news-card" . }}
+            </div>
+          {{ end }}
+        </div>
+
+        <div class="news__navigation">
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+
+      <div class="swiper-scrollbar"></div>
+    </div>
+  </div>
+{{ end }}

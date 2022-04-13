@@ -1,0 +1,13 @@
+[
+{{- range $index, $value := .Pages }}
+  {{- if $index -}}, {{ end }}
+  {
+    "id": {{ index (split .File.BaseFileName ".") 0 | jsonify }},
+    {{- range $key, $val := .Params }}
+    {{- if and (ne $key "iscjklanguage") (ne $key "draft") (ne $key "visibleincms")  }}
+    {{ $key | jsonify }}: {{ $val | jsonify }},
+    {{- end }}
+    {{- end }}
+  }
+{{- end }}
+]

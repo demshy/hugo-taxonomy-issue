@@ -1,0 +1,32 @@
+{{ $sentryDsn := getenv "SENTRY_DSN" }}
+{{ $context := getenv "CONTEXT" }}
+{{ if $sentryDsn }}
+  <script
+    src="https://browser.sentry-cdn.com/6.16.1/bundle.min.js"
+    integrity="sha384-WkFzsrcXKeJ3KlWNXojDiim8rplIj1RPsCbuv7dsLECoXY8C6Cx158CMgl+O+QKW"
+    crossorigin="anonymous">
+  </script>
+
+  {{ if .enableTracing }}
+    <script
+      src="https://browser.sentry-cdn.com/6.16.1/bundle.tracing.min.js"
+      integrity="sha384-hySah00SvKME+98UjlzyfP852AXjPPTh2vgJu26gFcwTlZ02/zm82SINaKTKwIX2"
+      crossorigin="anonymous">
+    </script>
+  {{ end }}
+
+  <script>
+    const sentryOptions = {
+      dsn: '{{ $sentryDsn }}',
+      environment: '{{ $context }}',
+      tracesSampleRate: 1.0,
+    }
+
+    if (Sentry) {
+      {{ if .enableTracing }}
+      sentryOptions.integrations = [new Sentry.Integrations.BrowserTracing()]
+      {{ end }}
+      Sentry.init(sentryOptions)
+    }
+  </script>
+{{ end }}

@@ -1,0 +1,60 @@
+{{ $firstImage := .Get "firstImage" }}
+{{ $secondImage := .Get "secondImage" }}
+{{ $title := .Get "title" }}
+{{ $subtitle := .Get "subtitle" }}
+{{ $backgroundColor := .Get "backgroundColor" }}
+{{ $cld := $.Site.Params.cldUrl }}
+{{ $bp := $.Site.Params.breakpoints }}
+{{ $transform := $.Site.Params.cldTransform }}
+
+<div class="story {{with $backgroundColor}}story--{{ . }}{{end }}">
+  <div class="container">
+    <div class="section-heading">
+      <div class="grid no-row-gap">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-6 offset-xl-2 col-xl-4 section-heading__left">
+          <h2 class="h1">{{ $title}}</h2>
+          {{ with $subtitle }}
+            <hr>
+            <p class="large-text">{{ . }}</p>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid align-items-center">
+      <div class="col-12 col-sm-4 col-xl-2">
+        {{ if in $firstImage $cld }}
+          {{ $relSrc := replace $firstImage $cld "" }}
+          <picture class="lazyload story__image-one" data-alt="">
+            <source srcset="{{ $cld }}w_480,h_460,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.md }}px)">
+            <source srcset="{{ $cld }}w_322,h_280,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+            <source srcset="{{ $cld }}w_768,h_280,{{ $transform }}/{{ $relSrc }}">
+          </picture>
+        {{ else }}
+          <picture class="lazyload story__image-one" data-alt="">
+            <source srcset="{{ $firstImage }}">
+          </picture>
+        {{ end }}
+      </div>
+
+      <div class="col-12 col-sm-8 col-xl-4 offset-xl-2 order-1">
+        {{ if in $secondImage $cld }}
+          {{ $relSrc := replace $secondImage $cld "" }}
+          <picture class="lazyload story__image-two" data-alt="">
+            <source srcset="{{ $cld }}w_756,h_460,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.md }}px)">
+            <source srcset="{{ $cld }}w_420,h_280,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+            <source srcset="{{ $cld }}w_768,h_280,{{ $transform }}/{{ $relSrc }}">
+          </picture>
+        {{ else }}
+          <picture class="lazyload story__image-one" data-alt="">
+            <source srcset="{{ $secondImage }}">
+          </picture>
+        {{ end }}
+      </div>
+
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 offset-xl-8 offset-xxl-7 order-sm-2 story__description">
+        {{ .Inner | markdownify }}
+      </div>
+    </div>
+  </div>
+</div>

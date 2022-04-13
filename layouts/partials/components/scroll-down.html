@@ -1,0 +1,8 @@
+<div class="scroll-down {{ .extraClass }}">
+  {{ with .arrowCurved }}
+    <i class="icon-arrow-down-curved"></i>
+  {{ else }}
+    <i class="icon-arrow-down"></i>
+  {{ end }}
+  <span>{{ T "scroll-down" }}</span>
+</div>

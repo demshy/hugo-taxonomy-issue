@@ -1,0 +1,33 @@
+<li class="lang-switch" role="navigation">
+  <a
+    class="lang-switch__button"
+    title="{{ T "switch-language" }}"
+    role="button"
+    aria-expanded="false"
+    aria-controls="lang-switch">
+    <i class="icon-language"></i>
+    {{ T "language" }} &nbsp; | &nbsp; {{ .Site.Language.LanguageName }}
+  </a>
+
+  <div id="lang-switch" class="mega-menu__level mega-menu__level--2">
+    <div class="mega-menu__title">
+      <button>
+        <i class="icon-arrow-left"></i>{{ T "back" }}
+      </button>
+      <span>{{ T "language" }}</span>
+    </div>
+    <ul class="no-bullets">
+      {{ range .Translations }}
+        <li>
+          <a
+            rel="alternate"
+            href="{{ .RelPermalink }}"
+            hreflang="{{ .Lang }}"
+            lang="{{ .Lang }}">
+            {{ .Language.LanguageName }}
+          </a>
+        </li>
+      {{ end }}
+    </ul>
+  </div>
+</li>

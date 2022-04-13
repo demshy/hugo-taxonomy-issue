@@ -1,0 +1,124 @@
+{{ $context := .context }}
+{{ $destination := .context.Params.destination }}
+{{ $gallery := .context.Params.gallery }}
+{{ $expiryDate := .context.ExpiryDate}}
+{{ $publishDate := .context.Params.publishDate}}
+{{ $isOffer := eq .context.Section "offers" }}
+{{ $isPress := eq .context.Section "press" }}
+
+{{ $link := .context.RelPermalink }}
+{{ with .parentSlug }}
+  {{ $link = print . (index (split $link "/") 2) }}
+{{ end }}
+
+<div class="card {{ .extraClass }} {{ with $gallery }}lightgallery{{end }}">
+  {{ with .context.Params.image }}
+    <div class="card__image">
+      {{ with $link }}<a href="{{ . }}">{{ end }}
+        {{ template "cardImage" (dict
+          "context" $context
+          "src" .
+          "alt" $context.Title
+        ) }}
+      {{ with $link }}</a>{{ end }}
+
+      {{ if and $isOffer $expiryDate }}
+        {{ partial "components/expiration-counter" (time.Format "2006-01-02T15:04:05Z0700" $expiryDate) }}
+      {{ end }}
+
+      {{ with $context.Params.points }}
+        <div class="card__points">
+          <strong>{{ . }}</strong>
+          {{ T "points" }}
+        </div>
+      {{ end }}
+
+      {{ if $gallery }}
+        {{ partialCached "components/view-gallery-button" dict }}
+      {{ end }}
+    </div>
+  {{ end }}
+
+  {{ with $gallery }}
+    <div class="gallery-images is-hidden">
+      {{ partial "components/one-or-many-gallery-item" .items }}
+    </div>
+  {{ end }}
+
+  {{ if or .context.Params.tags $expiryDate .context.Params.travelType $publishDate }}
+    <div class="card__tags">
+      {{ range .context.Params.tags }}
+        <span>{{ . }}</span>
+      {{ end }}
+      {{ if $expiryDate }}
+        <span>{{ T "until" }} {{ time.Format "2. 1. 2006" $expiryDate }}</span>
+      {{ end }}
+      {{ if and $isPress $publishDate }}
+        <span>{{ time.Format "2. 1. 2006" $publishDate }}</span>
+      {{ end }}
+      {{ with .context.Params.travelType }}
+        {{ $types := index $context.Site.Data.travelTypes }}
+        {{ $types = index $types $context.Site.Language.Lang }}
+        {{ range where $types.items "id" . }}
+          <span>{{ .title }}</span>
+        {{ end }}
+      {{ end }}
+    </div>
+  {{ end }}
+
+  {{ with .context.Title }}
+    <div>
+      <a class="h3" {{ if $link }}href="{{ $link }}"{{ end }}>{{ . }}</a>
+    </div>
+  {{ end }}
+
+  {{ if or .context.Params.stars $destination }}
+    <div class="card__stars">
+      {{ with .context.Params.stars }}
+        <span>
+          {{ range (seq .) }}
+            <i class="icon-star"></i>
+          {{ end }}
+        </span>
+      {{ end }}
+      <span>{{ $destination }}</span>
+    </div>
+  {{ end }}
+
+  {{ with .context.Params.teaser }}
+    <span class="card__teaser">{{ . | safeHTML }}</span>
+  {{ end }}
+
+  {{ with .context.Description }}
+    <p>{{ . }}</p>
+  {{ end }}
+
+  {{ if $link }}
+    <a href="{{ $link }}" class="button button--white">
+      {{ with .buttonText }}
+        {{ . }}
+      {{ else }}
+        {{ T "read-more" }}
+      {{ end }}
+    </a>
+  {{ end }}
+</div>
+
+{{ define "cardImage" }}
+  {{ $cld := .context.Site.Params.cldUrl }}
+  {{ $bp := .context.Site.Params.breakpoints }}
+  {{ $transform := .context.Site.Params.cldTransform }}
+
+  {{ if in .src $cld }}
+    {{ $relSrc := replace .src $cld "" }}
+    <img
+      data-src="{{ $cld }}w_576,h_324,{{ $transform }}/{{ $relSrc }}"
+      class="lazyload"
+      alt="{{ .alt }}">
+  {{ else }}
+    <img
+      data-src="{{ .src }}"
+      class="lazyload"
+      alt="{{ .alt }}">
+  {{ end }}
+{{ end }}

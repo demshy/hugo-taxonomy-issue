@@ -1,0 +1,30 @@
+{{ $parentSlug := "" }}
+{{ if .isRedirect }}
+  {{ $parentSlug = .context.RelPermalink }}
+{{ end }}
+
+<div class="card-slider">
+  <div class="container container--fluid">
+
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        {{ range .Pages }}
+          <div class="swiper-slide">
+            {{ partial "components/card" (dict
+              "context" .
+              "buttonText" (T "discover-more")
+              "parentSlug" $parentSlug
+            ) }}
+          </div>
+        {{ end }}
+      </div>
+
+      <div class="card-slider__navigation">
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swiper-scrollbar"></div>
+</div>

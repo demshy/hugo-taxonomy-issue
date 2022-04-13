@@ -1,0 +1,65 @@
+{{ $data := index .Site.Data.footer }}
+{{ $data = index $data .Page.Language.Lang }}
+
+{{ $propertyPage := . }}
+{{ if .IsPage }}
+  {{ $slug := replace .File.Dir "/" "" }}
+  {{ $slug = replace $slug "properties" "" }}
+
+  {{ with .Site.GetPage (print "/properties/" $slug) }}
+    {{ $propertyPage = . }}
+  {{ end }}
+{{ end }}
+
+{{ $brand := $propertyPage.Params.brand }}
+{{ $socialMedia := "" }}
+{{ if eq $brand "collection" }}
+  {{ $socialMedia = $data.socialMedia.collection }}
+{{ else if eq $brand "select"}}
+  {{ $socialMedia = $data.socialMedia.select }}
+{{ else if eq $brand "camping"}}
+  {{ $socialMedia = $data.socialMedia.camping }}
+{{ else if $data.socialMedia.posao }}
+  {{ $socialMedia = $data.socialMedia.posao }}
+{{ end }}
+
+<div class="footer-top hide-on-print">
+  <div class="container footer-top__lists">
+    {{ if and $data.title $data.links }}
+      <div class="footer-top__list">
+        <h3>{{ $data.title }}</h3>
+        {{ range $data.links }}
+          <a href="{{ .href }}">{{ .title }}</a>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    {{ if ne $socialMedia "" }}
+      <div class="footer-top__list">
+        <h3>{{ $data.socialMedia.title }}</h3>
+        {{ range $socialMedia }}
+          <a href="{{ .href }}">{{ .title }}</a>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+
+  {{ if $data.lists }}
+    <hr class="footer-top__bottom-line">
+    <div class="footer-top__accordion-wrapper container">
+      {{ range $data.lists }}
+        <details class="footer-top__accordion">
+          <summary>
+            <div>{{ .title }}<i class="icon-caret-down"></i></div>
+          </summary>
+          <nav>
+            {{ range .links }}
+              <a href="{{ .href }}">{{ .title }}</a>
+            {{ end }}
+          </nav>
+        </details>
+      {{ end }}
+    </div>
+  {{ end }}
+
+</div>

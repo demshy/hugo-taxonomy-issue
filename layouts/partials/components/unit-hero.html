@@ -1,0 +1,29 @@
+{{ $context := .context }}
+{{ $gallery := $context.Params.gallery }}
+
+<div class="unit-hero container {{ if and .showGalleryButton $gallery }}lightgallery{{ end }}">
+  <div class="grid">
+    <div class="col-12 col-xl-2 unit-hero__left">
+      {{ partialCached "components/scroll-down" (dict "extraClass" "") }}
+    </div>
+
+    <div class="col-12 col-xl-10 unit-hero__right negative-cp">
+      {{ with $context.Params.image }}
+        {{ partial "components/image" (dict
+          "context" $context
+          "src" .
+          "width" 1152
+          "height" 600
+        ) }}
+      {{ end }}
+
+      {{ if and .showGalleryButton $gallery }}
+        {{ partialCached "components/view-gallery-button" (dict "class" "view-gallery-button--hero") "hero" }}
+
+        <div class="gallery-images">
+          {{ partial "components/one-or-many-gallery-item" $gallery.items }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</div>

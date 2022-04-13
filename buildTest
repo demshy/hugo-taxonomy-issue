@@ -1,0 +1,26 @@
+#!/bin/bash
+hugo --ignoreCache --quiet
+
+FILE_PATH=./public/properties/index.html
+REF_SIZE=$(stat -f%z "$FILE_PATH")
+cp -f $FILE_PATH "$FILE_PATH.initial.html"
+
+NR_BUILDS=$1
+NR_INITIAL=0
+NR_ALTERNATIVE=0
+
+for (( c=1; c<=$NR_BUILDS; c++ ))
+do
+  hugo --ignoreCache --quiet
+  C_SIZE=$(stat -f%z "$FILE_PATH")
+  if [[ $C_SIZE != $REF_SIZE ]]
+  then
+    NR_ALTERNATIVE=$((NR_ALTERNATIVE+1))
+    cp -f $FILE_PATH "$FILE_PATH.alternative.html"
+  else
+    NR_INITIAL=$((NR_INITIAL+1))
+  fi
+  echo -ne "Building $c/$NR_BUILDS\r"
+done
+
+echo "Built: $NR_BUILDS, Initial: $NR_INITIAL, Alternative: $NR_ALTERNATIVE"

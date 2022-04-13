@@ -1,0 +1,61 @@
+{{ $splitWords := split .banner.title " " }}
+{{ $firstHalf := delimit (first 1 $splitWords) " " }}
+{{ $secondHalf := delimit (after 1 $splitWords) " " }}
+{{ $context := .context }}
+
+<div class="subpage-banner">
+  <div class="container">
+    {{ if and .banner.firstImage .banner.secondImage }}
+      <div class="subpage-banner__images">
+        {{ with .banner.firstImage }}
+          {{ template "subpageBannerImage" (dict
+            "image" .
+            "classFlag" "first"
+            "context" $context
+          ) }}
+        {{ end }}
+
+        {{ with .banner.title }}
+          <h2 class="hero-title subpage-banner__title">
+            <span>{{ $firstHalf }}&nbsp;</span>
+            <span>{{ $secondHalf }}</span>
+          </h2>
+        {{ end }}
+
+        {{ with .banner.secondImage }}
+          {{ template "subpageBannerImage" (dict
+            "image" .
+            "classFlag" "second"
+            "context" $context
+          ) }}
+        {{ end }}
+      </div>
+    {{ else }}
+      <h2 class="hero-title subpage-banner__title--empty">{{ .banner.title }}</h2>
+    {{ end }}
+
+    {{ partial "components/arrow-button" (dict
+      "text" .banner.button.text
+      "href" .banner.button.href
+      "class" "arrow-button--stretch"
+    ) }}
+  </div>
+</div>
+
+{{ define "subpageBannerImage" }}
+  {{ $cld := .context.Site.Params.cldUrl }}
+  {{ $bp := .context.Site.Params.breakpoints }}
+  {{ $transform := .context.Site.Params.cldTransform }}
+
+  {{ if in .image.image $cld }}
+    {{ $relSrc := replace .image.image $cld "" }}
+    <picture class="lazyload subpage-banner__image subpage-banner__image--{{ .classFlag }}" data-alt="{{ .image.alt }}">
+      <source srcset="{{ $cld }}w_592,h_640,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+      <source srcset="{{ $cld }}w_632,h_272,{{ $transform }}/{{ $relSrc }}">
+    </picture>
+  {{ else }}
+    <picture class="lazyload subpage-banner__image subpage-banner__image--first" data-alt="{{ .image.alt }}">
+      <source srcset="{{ .image.image }}">
+    </picture>
+  {{ end }}
+{{ end }}

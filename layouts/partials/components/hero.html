@@ -1,0 +1,84 @@
+{{ $context := .context }}
+{{ $cld := .context.Site.Params.cldUrl }}
+{{ $bp := .context.Site.Params.breakpoints }}
+{{ $transform := .context.Site.Params.cldTransform }}
+{{ $hasBookingBar := .hasBookingBar }}
+
+<div
+  class="hero"
+  data-duration="{{ with .hero.slideDuration }}{{ . }}{{ else }}8{{ end }}">
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      {{ range .hero.slides }}
+        <div class="swiper-slide">
+          {{ if .video }}
+            <video autoplay muted loop>
+              <source data-src="{{ .video }}" type="video/mp4">
+            </video>
+          {{ end }}
+
+          {{ if in .image $cld }}
+            {{ $relSrc := replace .image $cld "" }}
+            <picture>
+              <source
+                media="(min-width: {{ $bp.xl }}px)"
+                srcset="{{ $cld }}w_{{ $bp.xxl }},{{ $transform }}/{{ $relSrc }}">
+              <source
+                media="(min-width: {{ $bp.md }}px)"
+                srcset="{{ $cld }}w_{{ $bp.xl }},{{ $transform }}/{{ $relSrc }}">
+              <source
+                media="(min-width: {{ $bp.xs }}px)"
+                srcset="{{ $cld }}w_{{ $bp.md }},h_900,{{ $transform }}/{{ $relSrc }}">
+              <img
+                src="{{ $cld }}w_576,h_900,{{ $transform }}/{{ $relSrc }}"
+                alt=""
+                class="hero__poster"
+                width="1440"
+                height="900">
+            </picture>
+          {{ else }}
+            <img data-src="{{ .image }}" alt="" class="hero__poster" width="1440" height="900">
+          {{ end }}
+
+          <div class="container grid">
+            <div class="hero__content col-10">
+              {{ with .supertitle }}
+                <p class="hero__supertitle">{{ . }}</p>
+              {{ end }}
+
+              <h1 class="hero-title">{{ .title | safeHTML }}</h1>
+              <hr>
+
+              <div class="hero__description">
+                <p class="h4 no-margin">{{- .description -}}</p>
+                {{ with .button }}
+                  {{ if .href }}
+                    <a class="button button--primary {{ .class }}" href="{{ .href }}">
+                      {{ .text }}
+                    </a>
+                  {{ else }}
+                    <button class="button button--primary {{ .class }}">
+                      {{ .text }}
+                    </button>
+                  {{ end }}
+                {{ end }}
+              </div>
+              {{ if $hasBookingBar }}
+                {{ $env := getenv "CONTEXT" }}
+                {{ $phobsId := $context.Params.phobsId.develop }}
+                {{ if and $env (eq $env "production") }}
+                  {{ $phobsId = $context.Params.phobsId.production }}
+                {{ end }}
+                <div id="booking-bar-app" data-phobs-id="{{ (trim $phobsId " ") }}"></div>
+              {{ end }}
+            </div>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+
+  <div class="swiper-pagination container"></div>
+
+  {{ partialCached "components/scroll-down" (dict "extraClass" "scroll-down--hero") }}
+</div>

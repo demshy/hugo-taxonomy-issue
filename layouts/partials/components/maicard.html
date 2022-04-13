@@ -1,0 +1,59 @@
+{{ $data := index .Site.Data.maicard }}
+{{ $data = index $data .Page.Language.Lang }}
+
+<div class="maicard">
+  <div class="container grid">
+    <div class="col-10 order-2 col-md-5 order-md-1 maicard__title-wrap">
+      <span class="supertitle">{{ $data.supertitle }}</span>
+      <h1 class="hero-title">{{ $data.title }}</h1>
+    </div>
+
+    <div class="col-12 order-1 col-md-6 offset-md-6 order-md-2">
+      <div class="maicard__image frame frame--bottom-left frame--hide-md-down">
+        {{ partial "components/image" (dict
+          "context" .
+          "src" $data.topImage.src
+          "alt" $data.topImage.alt
+          "width" 880
+          "height" 640
+        ) }}
+      </div>
+    </div>
+
+    <div class="col-12 col-md-5 order-md-3 maicard__image-bottom">
+      <div class="frame frame--top-right frame--hide-md-down">
+        {{ partial "components/image" (dict
+          "context" .
+          "src" $data.bottomImage.src
+          "alt" $data.bottomImage.alt
+          "width" 576
+          "height" 420
+        ) }}
+      </div>
+    </div>
+
+    <div class="col-10 order-3 col-md-5 offset-md-6 order-md-4 col-lg-4">
+      <div class="maicard__list">
+        <p class="large-text">{{ $data.description }}</p>
+        <ul class="no-bullets">
+          {{ range $data.items }}
+            <li>
+              <i class="icon-check"></i>
+              {{ . | safeHTML }}
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+
+      <div class="maicard__buttons">
+        {{ range $data.buttons }}
+          <a
+            class="button {{ with .extraClass }}{{ . }}{{ end }}"
+            href="{{ .href }}">
+            {{ .text }}
+          </a>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</div>

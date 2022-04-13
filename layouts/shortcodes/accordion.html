@@ -1,0 +1,16 @@
+{{ $title := .Get "title" }}
+{{ $Inner := .Inner }}
+
+<details class="accordion">
+  <summary>
+    <div>
+      <span class="h3">{{ $title }}</span>
+      <i class="icon-caret-down"></i>
+    </div>
+  </summary>
+
+  <div class="accordion__content">
+    <hr>
+    {{ $Inner | markdownify }}
+  </div>
+</details>

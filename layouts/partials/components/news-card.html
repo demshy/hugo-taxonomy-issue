@@ -1,0 +1,50 @@
+{{ $context := . }}
+{{ $property := $context.Site.GetPage (print "/properties/" (replace .Params.property "/_index" "")) }}
+{{ $stars := $property.Params.stars }}
+{{ $brand := $property.Params.brand }}
+{{ $brandLogo := "" }}
+{{ with $brand }}
+  {{ $brandLogo = "https://res.cloudinary.com/maistra/image/upload/v1628234432/Brands/Collection/logo-maistra-collection.svg" }}
+  {{ if eq . "select" }}
+    {{ $brandLogo = "https://res.cloudinary.com/maistra/image/upload/v1628233398/Brands/Select/logo-maistra-select.svg" }}
+  {{ else if eq . "camping" }}
+    {{ $brandLogo = "https://res.cloudinary.com/maistra/image/upload/v1628233398/Brands/Camping/logo-maistra-camping.svg" }}
+  {{ end }}
+{{ end }}
+
+<div class="news-card">
+  {{ with .Params.image }}
+    {{ partial "components/image" (dict
+      "context" $context
+      "src" .
+      "class" "news-card__image"
+      "width" 828
+      "height" 520
+    ) }}
+  {{ end }}
+
+  <div class="news-card__content">
+    <div>
+      {{ if ne $brandLogo "" }}<img src="{{ $brandLogo }}" alt="">{{ end }}
+
+      <div class="card__stars">
+        {{ with $property }}<span class="h4 uppercase">{{ .Title }}</span>{{ end }}
+
+        {{ with $stars }}
+          <span class="theme--{{ $brand }} ">
+            {{ range (seq .) }}<i class="icon-star"></i>{{ end }}
+          </span>
+        {{ end }}
+      </div>
+
+      {{ with .Title }}<p class="h3">{{ . }}</p>{{ end }}
+      {{ with .Description }}<p class="no-margin-top">{{ . }}</p>{{ end }}
+    </div>
+
+    {{ with .Params.button }}
+      {{ if and .href .text }}
+        {{ partial "components/arrow-button" . }}
+      {{ end }}
+    {{ end }}
+  </div>
+</div>

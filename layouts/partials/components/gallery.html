@@ -1,0 +1,76 @@
+{{ $cld := .context.Site.Params.cldUrl }}
+{{ $bp := .context.Site.Params.breakpoints }}
+{{ $transform := .context.Site.Params.cldTransform }}
+
+{{ $leftImage := "" }}
+{{ $middleImage := "" }}
+{{ $rightImage := "" }}
+
+{{ if .items }}
+  {{ if and (reflect.IsSlice .items) (gt (len .items) 2) }}
+    {{ $leftImage = index .items 0 }}
+    {{ $middleImage = index .items 1 }}
+    {{ $rightImage = index .items 2 }}
+
+    <div class="gallery lightgallery {{ with .extraClass }}gallery--{{ . }}{{ end }}">
+      <div class="container grid no-row-gap">
+        <div class="col-6 order-md-2 gallery__left-image {{ if eq .extraClass "camping" }} col-md-6 {{ else }} col-md-3 frame frame--top-right {{ end }}">
+          {{ if in $leftImage $cld }}
+            {{ $relSrc := replace $leftImage $cld "" }}
+            <picture class="lazyload gallery-button-img">
+              <source srcset="{{ $cld }}w_840,h_1088,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+              <source srcset="{{ $cld }}w_480,h_380,{{ $transform }}/{{ $relSrc }}">
+            </picture>
+          {{ else }}
+            <img data-src="{{ $leftImage }}" alt="" width="420" height="544" class="lazyload gallery-button-img">
+          {{ end }}
+        </div>
+
+        <div class="col-6 order-md-3 gallery__middle-image {{ if eq .extraClass "camping" }} offset-md-6 col-md-6 {{ else }} offset-md-4 col-md-2 {{ end }}">
+          {{ if in $middleImage $cld }}
+            {{ $relSrc := replace $middleImage $cld "" }}
+            <picture class="lazyload gallery-button-img">
+              <source srcset="{{ $cld }}w_540,h_720,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+              <source srcset="{{ $cld }}w_598,h_376,{{ $transform }}/{{ $relSrc }}">
+            </picture>
+          {{ else }}
+            <img data-src="{{ $middleImage }}" alt="" width="270" height="360" class="lazyload gallery-button-img">
+          {{ end }}
+        </div>
+
+        <div class="col-12 order-md-1 offset-md-2 col-md-4 gallery__heading">
+          <h2 class="h1">{{ with .title }}{{ . }}{{ else }}{{ T "gallery" }}{{ end }}</h2>
+          {{ with .subtitle }}
+            <hr>
+            <p class="large-text no-margin">{{ . }}</p>
+          {{ end }}
+        </div>
+
+        <div class="col-12 order-md4 gallery__right-image {{ if eq .extraClass "camping" }} offset-md-8 col-md-4 {{ else }} offset-md-6 col-md-6  frame frame--bottom-left frame--hide-md-down{{ end }}">
+          {{ if in $rightImage $cld }}
+            {{ $relSrc := replace $rightImage $cld "" }}
+            <picture class="lazyload gallery-button-img">
+              <source srcset="{{ $cld }}w_1712,h_1240,{{ $transform }}/{{ $relSrc }}" media="(min-width: {{ $bp.sm }}px)">
+              <source srcset="{{ $cld }}w_990,h_356,{{ $transform }}/{{ $relSrc }}">
+            </picture>
+          {{ else }}
+            <img data-src="{{ $rightImage }}" alt="" width="856" height="620" class="lazyload gallery-button-img">
+          {{ end }}
+        </div>
+
+        <div class="col-12 order-md-5 offset-md-4 col-md-8">
+          {{ partial "components/arrow-button" (dict
+            "text" (T "open-gallery")
+            "class" "arrow-button--stretch gallery-button gallery__button"
+          )}}
+        </div>
+      </div>
+
+      <div class="gallery-images">
+        {{ range .items }}
+          <a class="galleryImage" href="{{ . }}"></a>
+        {{ end }}
+      </div>
+    </div>
+  {{ end }}
+{{ end }}

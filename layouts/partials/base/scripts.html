@@ -1,0 +1,50 @@
+{{ $breakpoints := .Site.Params.breakpoints }}
+
+<!-- imports critical -->
+{{ $header := resources.Get "/scripts/header.js" }}
+{{ $megaMenu := resources.Get "/scripts/mega-menu.js" | js.Build (dict "params" $breakpoints) }}
+{{ $hero := resources.Get "/scripts/hero.js" | js.Build (dict "params" $breakpoints) }}
+{{ $lazyload := resources.Get "/scripts/lazyload.js" }}
+
+<!-- imports non critical -->
+{{ $colorScheme := resources.Get "/scripts/color-scheme.js" | js.Build }}
+{{ $cookies := resources.Get "/scripts/cookies.js" }}
+{{ $frame := resources.Get "/scripts/frame.js" | js.Build }}
+{{ $heroAnim := resources.Get "/scripts/hero-anim.js" | js.Build (dict "params" $breakpoints) }}
+{{ $sectionHeading := resources.Get "/scripts/section-heading.js" | js.Build (dict "params" $breakpoints) }}
+{{ $services := resources.Get "/scripts/services.js" | js.Build (dict "params" $breakpoints) }}
+
+{{ $options := (dict
+  "sourcemap" "inline"
+) }}
+
+<!-- bundling critical -->
+{{ $criticalItems := slice $header $megaMenu $hero $lazyload }}
+{{ $criticalBundle := $criticalItems | resources.Concat "scripts/bundle-critical.js" | js.Build $options }}
+
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+<script src="{{ (resources.Get "/scripts/debounce.js").RelPermalink }}"></script>
+
+<script src="/js/env.js"></script>
+
+<script src="{{ $criticalBundle.RelPermalink }}"></script>
+
+<script src="https://unpkg.com/cloudinary-core@latest/cloudinary-core-shrinkwrap.js"></script>
+
+<script type="text/javascript">
+  var cl = cloudinary.Cloudinary.new({cloud_name: 'maistra'})
+  cl.config({
+    responsive_use_breakpoints: 'true'
+  })
+  cl.responsive()
+</script>
+
+<!-- bundling non critical -->
+{{ $nonCritItems := slice $colorScheme $frame $heroAnim $sectionHeading $services }}
+{{ $nonCritBundle := $nonCritItems | resources.Concat "scripts/bundle-common.js" | js.Build $options }}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/ScrollTrigger.min.js"></script>
+
+<script src="{{ $nonCritBundle.RelPermalink }}"></script>

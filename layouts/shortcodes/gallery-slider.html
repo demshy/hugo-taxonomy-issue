@@ -1,0 +1,38 @@
+{{ $title := .Get "title" }}
+{{ $theme := .Get "theme" }}
+{{ $items := split (.Get "items") "|" }}
+{{ $context := . }}
+
+<div class="gallery-slider gallery-slider--{{ $theme }} card-slider">
+  <div class="container">
+    <div class="gallery-slider__header">
+      <h2>{{ with $title }}{{ . }}{{ else }}{{ T "gallery" }}{{ end }}</h2>
+      <div class="gallery-slider__navigation">
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+
+    <div class="swiper negative-cp">
+      <div class="swiper-wrapper">
+        {{ range $items }}
+          <div class="swiper-slide lightgallery">
+            <div class="gallery-slider__image">
+              {{ partial "components/image" (dict
+                "context" $context
+                "src" .
+              ) }}
+              {{ partialCached "components/view-gallery-button" dict }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+
+    <div class="gallery-images is-hidden">
+      {{ range $items }}
+        <a class="galleryImage" href="{{ . }}"></a>
+      {{ end }}
+    </div>
+  </div>
+</div>

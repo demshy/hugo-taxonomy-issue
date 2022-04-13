@@ -1,0 +1,71 @@
+{{ $tabId := cond .tabId .tabId (index (seq 500 | shuffle) 0) }}
+
+<div class="tabs">
+  {{ range  $key, $value := . }}
+    <input id="{{ $key }}-{{ $tabId }}" type="radio" name="tab-{{ $tabId }}" {{ if eq $key 0 }} checked {{ end }}>
+  {{ end }}
+
+  <div class="tabs__holder">
+    {{ range  $key, $value := . }}
+      <label for="{{ $key }}-{{ $tabId }}">
+        <span>{{ .title }}</span>
+      </label>
+    {{ end }}
+  </div>
+
+  {{ range $key, $value := . }}
+    <section>
+      {{ $markdown := replaceRE `{(?:"[^"]*"['"]*|'[^']*'['"]*|[>.*<]*|[^'">])*}` "" .content }}
+      {{ $markdown | markdownify }}
+
+      {{ $partial := findRE `{(?:"[^"]*"['"]*|'[^']*'['"]*|[>.*<]*|[^'">])*}` .content}}
+      {{ $partial = delimit $partial "" }}
+      {{ $partial = split $partial " {{<"}}
+
+      {{ range $partial }}
+
+        {{ $inner := findRE `>}}(?:"[^"]*"['"]*|'[^']*'['"]*|[>.*<]*|[^'">])*{{< /` . }}
+        {{ $inner = delimit $inner " " }}
+        {{ $inner = replace $inner ">}}"  "" }}
+        {{ $inner = replace $inner "{{< /"  "" }}
+
+        {{ $partialName := findRE "[\\w-]+" . }}
+        {{ $partialName = index $partialName 0 }}
+
+        {{ $object := findRE "\\w+=.*[^>}}]" .}}
+        {{ $object =  delimit $object " " }}
+        {{ $object =  replace $object "\" " "\"*" }}
+        {{ $object =  replace $object "\"" "" }}
+        {{ $object =  split $object "*" }}
+
+        {{ $context := dict }}
+
+        {{ range $key, $value := $object }}
+          {{ $key = add $key 1}}
+          {{ $item := split $value "=" }}
+
+          {{ if ne $key (len $object)}}
+            {{ $list := split (index $item 1) "|" }}
+            {{ $itemValue := "" }}
+            {{ if gt (len $list) 1 }}
+              {{ $itemValue = $list }}
+            {{ else }}
+              {{ $itemValue = (index $item 1)}}
+            {{ end }}
+            {{ $currentIteration := dict (index $item 0) $itemValue }}
+
+            {{ $context = merge $context $currentIteration }}
+          {{ end }}
+
+          {{ if and (eq $key (len $object)) (and (ne $partialName "markdown") (ne $partialName nil)) }}
+            {{ if ne $inner "" }}
+              {{ $context = merge $context (dict "content" $inner)}}
+            {{ end }}
+            {{ $path := printf "components/%s" $partialName }}
+            {{ partial $path $context }}
+            {{ end }}
+        {{ end }}
+      {{ end }}
+    </section>
+  {{ end }}
+  </div>

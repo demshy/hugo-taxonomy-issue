@@ -1,0 +1,15 @@
+{{ $image := .Get "image" }}
+{{ $content := .Inner }}
+{{ $context := . }}
+
+<div class="side-card">
+  <div class="side-card__image">
+    {{ partial "components/image" (dict
+      "context" $context
+      "src" $image
+    ) }}
+  </div>
+  <div class="side-card__content">
+    {{ $content | markdownify }}
+  </div>
+</div>

@@ -1,0 +1,5 @@
+{{- $env := getenv "CONTEXT" -}}
+
+{
+  "title": "{{ .Title }}"
+}

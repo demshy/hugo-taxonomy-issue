@@ -1,0 +1,66 @@
+{{ $context := .context }}
+{{ $isSublevel := .isSublevel }}
+{{ $dests := where (where .context.Site.Pages ".Section" "destinations") ".Params.show_on_check_rates" true }}
+{{ $brands := where (where .context.Site.Pages ".Section" "brands") ".Params.visibleInCMS" true }}
+
+{{ with $context.Site }}
+  <a href="{{ .Home.RelPermalink }}" class="mega-menu__logo">
+    <img data-src="{{ .Data.header.logo.desktop }}" alt="{{ .Title }}" height="56" class="lazyload">
+  </a>
+
+  <ul class="mega-menu__main no-bullets">
+    {{ if and $dests $brands }}
+      {{ range .Menus.main }}
+        {{ partial "base/main-menu" (dict
+          "context" $context
+          "dests" $dests
+          "brands" $brands
+          "isSublevel" $isSublevel
+          "item" .
+        ) }}
+      {{ end }}
+    {{ else }}
+      {{ range .Menus.main }}
+        <li>
+          <a href="{{ .URL }}">{{ .Name }}</a>
+        </li>
+      {{ end }}
+    {{ end }}
+    {{ range .Menus.additional }}
+      {{ partial "base/additional-menu" (dict
+        "context" $context
+        "item" .
+      ) }}
+    {{ end }}
+  </ul>
+
+  <ul class="mega-menu__sections no-bullets">
+    {{ range .Menus.sections }}
+      {{ $active := or ($context.IsMenuCurrent "sections" .) ($context.HasMenuCurrent "sections" .) }}
+      <li>
+        <a
+          href="{{ .URL }}"
+          class="{{ if $active }}active{{ end }}">
+          {{ .Name }}
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+
+  {{ if not $isSublevel }}
+    <hr>
+    <ul class="mega-menu__personal no-bullets">
+      {{ range .Menus.personal }}
+        {{ $active := or ($context.IsMenuCurrent "personal" .) ($context.HasMenuCurrent "personal" .) }}
+        <li>
+          <a
+            href="{{ .URL }}"
+            class="{{ if $active }}active{{ end }}">
+            <i class="icon-{{ .Pre }}"></i> {{ .Name }}
+          </a>
+        </li>
+      {{ end }}
+      {{ partial "base/lang-switch" $context }}
+    </ul>
+  {{ end }}
+{{ end }}

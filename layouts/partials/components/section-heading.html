@@ -1,0 +1,24 @@
+{{ $rightClass := .rightClass }}
+
+<div class="section-heading {{ .class }}">
+  <div class="grid no-row-gap">
+    <div class="section-heading__left col-12 col-xs-10 col-sm-8 col-md-7 col-lg-6 col-xl-5 offset-xl-1 col-xxl-4 offset-xxl-2">
+      <h2 class="h1">{{ .title }}</h2>
+      {{ with .subtitle }}
+        <hr>
+        <p class="large-text">{{ . }}</p>
+      {{ end }}
+    </div>
+
+    {{ if or .button .feelReborn }}
+      <div class="section-heading__right {{ $rightClass }} col-12 col-md-5 col-lg-6 col-xl-5 offset-xl-7">
+        {{ if and .button.text .button.href }}
+          {{ partial "components/arrow-button" .button }}
+        {{ end }}
+        {{ if .feelReborn }}
+          <img data-src="https://res.cloudinary.com/maistra/image/upload/v1640330262/Logos/feel-reborn.png" alt="Feel Reborn" class="lazyload">
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</div>

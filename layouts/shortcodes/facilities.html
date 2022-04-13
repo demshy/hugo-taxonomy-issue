@@ -1,0 +1,28 @@
+{{ $title := .Get "title" }}
+{{ $columns := split (.Get "columns") ";" }}
+
+<div class="facilities">
+  <div class="container">
+    {{ with $title }}
+      <h2>{{ . }}</h2>
+    {{ end }}
+
+    <div class="grid">
+      {{ range $index, $element := $columns }}
+        {{ $items := split $element "|"}}
+        <div class="col-12 col-md-4">
+          <div class="facilities__card">
+            <h3 class="no-margin-top">{{ index $items 0 }}</h3>
+            <ul class="no-margin-bottom">
+              {{ range after 1 $items }}
+                <li>
+                  <span>{{ . }}</span>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</div>

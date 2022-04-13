@@ -1,0 +1,54 @@
+{{ $data := .Site.Data.header }}
+{{ $class := .Params.headerClass }}
+{{ $logoMobile := $data.logo.mobile }}
+{{ $logoDesktop := $data.logo.desktop }}
+{{ $context := . }}
+
+{{ if eq $class "header--dark" }}
+  {{ $logoDesktop = $data.logo.desktopWhite }}
+{{ end }}
+
+<header class="header {{ $class }}">
+  <div class="header__top">
+    <a href="{{ .Site.Home.RelPermalink }}" title="{{ .Site.Home.Title }}" class="header__logo">
+      <picture>
+        <source media="(min-width: {{ .Site.Params.breakpoints.md }}px)" srcset="{{ $logoDesktop }}">
+        <source media="print" srcset="{{ $logoDesktop }}">
+        <img src="{{ $logoMobile }}" alt="{{ .Site.Title }}" width="23" height="18">
+      </picture>
+    </a>
+
+    <div class="header__icons hide-on-print">
+      <a href="tel:{{ $data.phone }}" title="{{ T "call" }}" class="header__icon">
+        <i class="icon-call"></i>
+      </a>
+
+      {{ if .Site.Params.enableSearch }}
+        <button title="{{ T "search" }}" class="header__icon">
+          <i class="icon-search"></i>
+        </button>
+      {{ end }}
+
+      {{ partial "base/mega-menu" . }}
+    </div>
+  </div>
+
+  <div class="header__bottom">
+    <button class="is-hidden header__arrow-left">
+      <i class="icon-caret-left"></i>
+    </button>
+
+    <div>
+      {{ range .Site.Menus.main }}
+        {{ $active := or ($context.IsMenuCurrent "main" .) ($context.HasMenuCurrent "main" .) }}
+        <a href="{{ .URL }}" class="{{ if $active }}active{{ end }}">{{ .Name }}</a>
+      {{ end }}
+    </div>
+
+    <button class="is-hidden header__arrow-right">
+      <i class="icon-caret-right"></i>
+    </button>
+  </div>
+</header>
+
+<div class="header-sentinal"></div>

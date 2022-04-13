@@ -1,0 +1,86 @@
+{{ $context := .context }}
+{{ $title := .title }}
+
+<div class="contact">
+  <div class="grid container no-row-gap">
+    <div class="contact__reservations-menu col-12 col-md-6 offset-lg-1 col-lg-5 col-xl-4 offset-xl-2">
+      {{ with .reservations }}
+        <h2>{{ $title }}</h2>
+
+        {{ if or .phone .email }}
+          <h3>{{ (T "reservations") }}</h3>
+          <hr>
+          {{ with .phone }}<a href="tel:{{ . }}">{{ . }}</a>{{ end }}
+          {{ with .email }}<a href="mailto:{{ . }}">{{ . }}</a>{{ end }}
+        {{ end }}
+
+        {{ if and .openingHours (gt (len .openingHours) 0) }}
+          <h3>{{ (T "opening-hours") }}</h3>
+          <hr>
+          {{ range .openingHours }}
+            <li>{{ .left | safeHTML }}<span></span>{{ .right }}</li>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ with .locations }}
+        <div class="contact__locations">
+          {{ range . }}
+            <h3>{{ .title }}</h3>
+            <hr>
+
+            {{ if .address }}
+              <div>{{ (T "address") }}: {{ .address }}</a></div>
+            {{ end }}
+
+            {{ $list := .phone }}
+            {{ $len := len $list }}
+            <div>{{ (T "phone-short") }}:&nbsp;
+              {{ range $i, $el := .phone }}
+                <a href="tel:{{ . }}">{{ . }}</a>{{ if ne (add $i 1) $len }},{{ end }}
+              {{ end }}
+            </div>
+
+            {{ with .fax }}
+              <div>{{ (T "fax") }}: {{ . }}</a></div>
+            {{ end }}
+
+            {{ with .email }}
+              <div>{{ (T "email" ) }}:&nbsp;<a href="mailto:{{ . }}">{{ . }}</a></div>
+            {{ end }}
+          {{ end }}
+        </div>
+      {{ end }}
+
+      {{ with .buttons }}
+        <div class="contact__buttons section-margin-small-top">
+          {{ if ne $context.Layout "weddings-list" }}
+            <a class="button button--primary" href="{{ .business.href }}">
+              {{ .business.text }}
+            </a>
+          {{ end }}
+          {{ if and (ne $context.Layout "conference-halls-list") (ne $context.Layout "conference-halls-single") }}
+            <a class="button button--primary" href="{{ .weddings.href }}">
+              {{ .weddings.text }}
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+
+    {{ with .menus }}
+      <div class="contact__menus col-12 col-md-5 offset-md-7 col-lg-4 offset-lg-8">
+        <i class="icon-wellness"></i>
+        <h3>{{ .title }}</h3>
+
+        {{ with .content }}
+          <p>{{ . }}</p>
+        {{ end }}
+
+        {{ range .files }}
+          <a href="{{ .source }}" target="_blank">{{ .name }}</a><br>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</div>
