@@ -1,7 +1,0 @@
-{{ if (eq "string" (printf "%T" .)) }}
-  <a class="galleryImage" href="{{ . }}"></a>
-{{ else }}
-  {{ range . }}
-    <a class="galleryImage" href="{{ . }}"></a>
-  {{ end }}
-{{ end }}

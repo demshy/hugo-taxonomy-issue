@@ -1,0 +1,24 @@
+defaultContentLanguage = "en"
+title = "Hugo Taxonomy Issue"
+disableFastRender = true
+
+[taxonomies]
+property = "properties"
+
+[outputs]
+section = ["JSON", "HTML"]
+taxonomy = ["JSON", "HTML"]
+term = ["JSON", "HTML"]
+
+[languages]
+
+[languages.en]
+languageName = "English"
+weight = 1
+
+[languages.de]
+languageName = "Deutsch"
+weight = 3
+
+[languages.de.permalinks]
+properties = "unterkunft/:slug"

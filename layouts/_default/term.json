@@ -1,5 +1,4 @@
-{{- $env := getenv "CONTEXT" -}}
-
 {
+  "layout": "_default/term.json",
   "title": "{{ .Title }}"
 }

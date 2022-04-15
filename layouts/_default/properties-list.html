@@ -1,3 +1,12 @@
 {{ define "main" }}
-PROPERTIES LIST LAYOUT
+<h1>PROPERTIES LIST LAYOUT</h1>
+
+<p>page title: {{ .Title }}</p>
+
+<p>pages:</p>
+<ul>
+  {{ range .Pages }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+  {{ end }}
+</ul>
 {{ end }}

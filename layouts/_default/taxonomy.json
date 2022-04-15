@@ -1,4 +1,4 @@
-{{- $env := getenv "CONTEXT" -}}
+default taxonomy json
 [
   {{- range $index, $value := .Pages }}
     {{- if $index -}}, {{ end }}

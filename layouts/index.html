@@ -1,1 +1,8 @@
-{{ define "main" }}home (not relevant, go to <a href="/properties">/properties</a>{{ end }}
+{{ define "main" }}
+<h1>HOME</h1>
+
+<p>not relevant, go to</p>
+{{ range .Pages }}
+  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+{{ end }}
+{{ end }}

@@ -1,5 +1,4 @@
 ---
-title: Example property name
-draft: false
+title: Property One
 description: "Example property description"
 ---
